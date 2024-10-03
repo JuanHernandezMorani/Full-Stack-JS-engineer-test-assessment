@@ -51,12 +51,16 @@ let entries = Object.entries(sequelize.models);
 let capsEntries = entries.map((entry) => [entry[0][0].toUpperCase() + entry[0].slice(1), entry[1]]);
 sequelize.models = Object.fromEntries(capsEntries);
 
-const {Country, Bordercountry} = sequelize.models;
+const {Country, Flag, Population, Borders} = sequelize.models;
 
-Country.belongsToMany(Bordercountry, {through: 'CountryBorder'});
+Country.belongsToMany(Borders, {through: 'CountryBorders'});
+Borders.belongsToMany(Country, {through: 'CountryBorders'});
 
-Bordercountry.belongsToMany(Country, {through: 'CountryBorder'});
+Country.belongsTo(Flag, {through: 'CountryFlag'});
+Flag.belongsTo(Country, {through: 'CountryFlag'});
 
+Country.belongsTo(Population, {through: 'CountryPopulation'});
+Population.belongsTo(Country, {through: 'CountryPopulation'});
 
 module.exports = {
   ...sequelize.models,

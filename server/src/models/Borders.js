@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
-  sequelize.define('country', {
+  sequelize.define('borders', {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -10,10 +10,10 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    code: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      }
+    data: {
+      type: DataTypes.JSON,
+      allowNull: true,
+    }
   },
   {
     timestamps: false
