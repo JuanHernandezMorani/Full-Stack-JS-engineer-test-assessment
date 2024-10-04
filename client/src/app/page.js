@@ -12,12 +12,12 @@ export default async function Home() {
 
     return (
         <div>
-            <h1>Country List</h1>
+            <h1 style={{ textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '9px' }}>Country List</h1>
             <ul>
                 {countries.length > 0 ? (
                     countries.map(country => {
                         return (
-                            <li key={country.code}>
+                            <li key={country.code} style={{ marginBottom: '10px', marginLeft: '25px' }}>
                                 <Link href={`/detail/${country.id}`}>
                                     {country.name}
                                 </Link>

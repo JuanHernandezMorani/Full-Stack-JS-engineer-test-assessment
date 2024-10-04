@@ -24,26 +24,51 @@ catch (error) {
 app.get('/:param', async (req, res) => {
     const { param } = req.params;
     try {
-        
-        let country = await Country.findByPk(param, {
-            include: [
-                {
-                    model: Flag,
-                    attributes: ['image']
-                },
-                {
-                    model: Borders,
-                    attributes: ['data'],
-                    through: {
-                        attributes: []
+        let country = null;
+        if(!isNaN(param)){
+            country = await Country.findByPk(param, {
+                include: [
+                    {
+                        model: Flag,
+                        attributes: ['image']
+                    },
+                    {
+                        model: Borders,
+                        attributes: ['data'],
+                        through: {
+                            attributes: []
+                        }
+                    },
+                    {
+                        model: Population,
+                        attributes: ['data']
                     }
-                },
-                {
-                    model: Population,
-                    attributes: ['data']
-                }
-            ]
-        });
+                ]
+            });
+        }
+        else{
+            country = await Country.findOne({
+                where: { code: param },
+                include: [
+                    {
+                        model: Flag,
+                        attributes: ['image']
+                    },
+                    {
+                        model: Borders,
+                        attributes: ['data'],
+                        through: {
+                            attributes: []
+                        }
+                    },
+                    {
+                        model: Population,
+                        attributes: ['data']
+                    }
+                ]
+            });
+        }
+        
 
         return country ? res.status(200).send(country) : res.status(404).send("Country not found");
     } catch (e) {
