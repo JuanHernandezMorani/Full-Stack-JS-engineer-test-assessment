@@ -2,18 +2,18 @@ require('dotenv').config();
 const { Sequelize } = require('sequelize');
 const fs = require('fs');
 const path = require('path');
-const { group } = require('console');
+
 const {
   DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME
 } = process.env;
 
-let sequelize =
+const sequelize =
   process.env.NODE_ENV === "production"
     ? new Sequelize({
         database: DB_NAME,
         dialect: "postgres",
         host: DB_HOST,
-        port: DB_PORT,
+        port: DB_PORT || 5432,
         username: DB_USER,
         password: DB_PASSWORD,
         pool: {
@@ -26,12 +26,10 @@ let sequelize =
             require: true,
             rejectUnauthorized: false,
           },
-          keepAlive: true,
         },
-        ssl: true,
       })
     : new Sequelize(
-        `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/server`,
+        `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT || 5432}/${DB_NAME || 'server'}`,
         { logging: false, native: false }
       );
 
@@ -51,18 +49,18 @@ let entries = Object.entries(sequelize.models);
 let capsEntries = entries.map((entry) => [entry[0][0].toUpperCase() + entry[0].slice(1), entry[1]]);
 sequelize.models = Object.fromEntries(capsEntries);
 
-const {Country, Flag, Population, Borders} = sequelize.models;
+const { Country, Flag, Population, Borders } = sequelize.models;
 
-Country.belongsToMany(Borders, {through: 'CountryBorders'});
-Borders.belongsToMany(Country, {through: 'CountryBorders'});
+Country.belongsToMany(Borders, { through: 'CountryBorders' });
+Borders.belongsToMany(Country, { through: 'CountryBorders' });
 
-Country.belongsTo(Flag, {through: 'CountryFlag'});
-Flag.belongsTo(Country, {through: 'CountryFlag'});
+Country.belongsTo(Flag, { through: 'CountryFlag' });
+Flag.belongsTo(Country, { through: 'CountryFlag' });
 
-Country.belongsTo(Population, {through: 'CountryPopulation'});
-Population.belongsTo(Country, {through: 'CountryPopulation'});
+Country.belongsTo(Population, { through: 'CountryPopulation' });
+Population.belongsTo(Country, { through: 'CountryPopulation' });
 
 module.exports = {
   ...sequelize.models,
-  conn: sequelize,     
+  conn: sequelize,
 };

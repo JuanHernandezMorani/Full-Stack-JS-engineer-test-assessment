@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const { Country, Flag, Population, Borders } = require("../db.js");
-const { createCountries } = require("../middlewares/index.js");
+const { createCountries, test } = require("../middlewares/index.js");
 
 const app = Router();
 
@@ -9,8 +9,9 @@ const { name } = req.query;
 
 const init = async (data) => {
     let all = await Country.findAll();
-    let filtered = all.filter(c => c.name.toLowerCase().includes(data.toLowerCase()));
-    data.length > 0 ? filtered.length > 0 ? res.status(200).send(filtered) : res.status(404).send("") : res.status(200).send(all);
+    let filtered = "";
+    if(!!data) all.filter(c => c.name.toLowerCase().includes(data.toLowerCase()));
+    !!data ? filtered.length > 0 ? res.status(200).send(filtered) : res.status(404).send("") : res.status(200).send(all);
 };
 
 try {
