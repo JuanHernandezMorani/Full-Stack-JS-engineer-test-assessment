@@ -66,13 +66,13 @@ async function createCountries() {
     const json = await axios.get('https://date.nager.at/api/v3/AvailableCountries');
     try{
 
-   // await createPopulations();
-   // await createFlags();
-    //await createBorders(json.data);
+   await createPopulations();
+   await createFlags();
+   await createBorders(json.data);
 
     await Promise.all(
         json.data.map(async (obj) => {
-
+            
             const countryName = obj.name;
             const countryCode = obj.countryCode;
 
@@ -86,10 +86,8 @@ async function createCountries() {
               let cFlag = await Flag.findOne({ where: { name: countryName } });
       
           const country = await Country.create({
-            where: {
                 name: countryName,
                 code: countryCode,
-            },
           });
       
           if (cBorders) {
@@ -97,12 +95,13 @@ async function createCountries() {
           }
       
           if (cFlag) {
-            await country.addFlags(cFlag);
+            await country.setFlag(cFlag);
           }
       
           if (cPopulation) {
-            await country.addPopulations(cPopulation);
+            await country.setPopulation(cPopulation);
           }
+          
         })
       );
 

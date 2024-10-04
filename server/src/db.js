@@ -54,11 +54,11 @@ const { Country, Flag, Population, Borders } = sequelize.models;
 Country.belongsToMany(Borders, { through: 'CountryBorders' });
 Borders.belongsToMany(Country, { through: 'CountryBorders' });
 
-Country.belongsTo(Flag, { through: 'CountryFlag' });
-Flag.belongsTo(Country, { through: 'CountryFlag' });
+Country.belongsTo(Flag);
+Flag.hasOne(Country);
 
-Country.belongsTo(Population, { through: 'CountryPopulation' });
-Population.belongsTo(Country, { through: 'CountryPopulation' });
+Country.belongsTo(Population);
+Population.hasOne(Country);
 
 module.exports = {
   ...sequelize.models,
